@@ -16,7 +16,7 @@ class seqDate(object):
 
 	def writeICal(self, calFile):
 
-		tstring = '%04d%02d%02dT%02d%02d%02dZ\n' % \
+		tstring = '%04d%02d%02dT%02d%02d%02dZ' % \
 			(self.value.year, self.value.month, self.value.day, \
 			self.value.hour, self.value.minute, self.value.second)
 
