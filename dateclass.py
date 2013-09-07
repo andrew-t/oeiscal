@@ -23,6 +23,6 @@ class seqDate(object):
 		calFile.write('BEGIN:VEVENT\n')
 		calFile.write('DTEND;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('DTSTART;VALUE=DATE-TIME:%s\n' % tstring)
-		calFile.write('SUMMARY:%s\n' % self.formatted)
-		calFile.write('DESCRIPTION:A%06d: %s\n' % (self.seq.id, self.seq.name))
+		calFile.write('SUMMARY:%s - %s\n' % (self.formatted, self.seq.name))
+		calFile.write('DESCRIPTION:http://oeis.org/A%06d - %s\n' % (self.seq.id, self.seq.name))
 		calFile.write('END:VEVENT\n')

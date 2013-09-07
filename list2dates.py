@@ -16,6 +16,14 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 
 	useYear = year >= 0
 
+	if not useTime:
+		if year >= 0:
+			return seqDate(seq, '%02d/%02d/%02d' % tuple(seq.sequence[0:3]), \
+				datetime(seq.sequence[year], seq.sequence[month], seq.sequence[day]))
+		else:
+			return seqDate(seq, '%02d/%02d' % tuple(seq.sequence[0:2]), \
+				datetime(defaultYear(seq.sequence[month], seq.sequence[day]), seq.sequence[month], seq.sequence[day]))
+
 	if timeFirst and useSeconds and useYear:
 		formatted = '%02d/%02d/%02d %02d:%02d:%02d' % tuple(seq.sequence[0:6])
 	elif timeFirst and useSeconds and not useYear:
@@ -32,12 +40,6 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 		formatted = '%02d:%02d %02d/%02d/%02d' % tuple(seq.sequence[0:5])
 	elif not timeFirst and not useSeconds and not useYear:
 		formatted = '%02d:%02d %02d/%02d' % tuple(seq.sequence[0:4])
-
-	if not useTime:
-		if year >= 0:
-			return seqDate(seq, formatted, datetime(seq.sequence[year], seq.sequence[month], seq.sequence[day]))
-		else:
-			return seqDate(seq, formatted, datetime(defaultYear(seq.sequence[month], seq.sequence[day]), seq.sequence[month], seq.sequence[day]))
 
 	if timeFirst:
 		timeOffset = 0
