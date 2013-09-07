@@ -24,5 +24,5 @@ class seqDate(object):
 		calFile.write('DTEND;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('DTSTART;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('SUMMARY:%s\n' % self.formatted)
-		calFile.write('DESCRIPTION:A%06d: %s\n' % (self.seq.id, self.seq.id))
+		calFile.write('DESCRIPTION:A%06d: %s\n' % (self.seq.id, self.seq.name))
 		calFile.write('END:VEVENT\n')
