@@ -1,13 +1,12 @@
 from list2dates import *
 from oeis import *
-import datetime
-from dateclass import date
+from datetime import *
+from dateclass import *
 
-today = datetime.date.today()
-start = date([],'',0, today.year,today.month,today.day, -1,-1,-1)
-end = date([],'',0, today.year+1,today.month,today.day, -1,-1,-1)
+start = datetime.now()
+end = start + timedelta(366)
 
-# todo - nicely
+# todo - nicely?
 calendar = []
 for m in xrange(0,12):
 	calendar.append([])
@@ -20,9 +19,11 @@ for s in xrange(1,10000):
 	if len(seq.sequence) < 6:
 		continue
 	print 'sequence name: %s' % seq.name
-	for date in list2dates(seq, 1000 * (0.5 ** (s * 0.001)) + 500):
-		if date.after(start) and date.before(end):
-			calendar[date.month-1][date.day-1].append(date)
+	dates = list2dates(seq)
+	print '%d dates found' % len(dates)
+	for d in dates:
+		if d.value > start and d.value < end:
+			calendar[d.value.month-1][d.value.day-1].append(d)
 
 output = open('oeis.ics', 'w')
 output.write('BEGIN:VCALENDAR\n')
@@ -37,20 +38,6 @@ for m in xrange(0,12):
 					continue
 				if date.score > bestdate.score:
 					bestdate = date
-			output.write('BEGIN:VEVENT\n')
-			try:
-				if bestdate.seconds > -1:
-					raise TypeError
-				tstring = '%04d%02d%02dT%02d%02d%02dZ' % (bestdate.year, bestdate.month, bestdate.day, bestdate.hours, bestdate.minutes, bestdate.seconds)
-			except TypeError:
-				try:
-					tstring = '%04d%02d%02dT%02d%02d00Z' % (bestdate.year, bestdate.month, bestdate.day, bestdate.hours, bestdate.minutes)
-				except TypeError:
-					tstring = '%04d%02d%02dT000000Z' % (bestdate.year, bestdate.month, bestdate.day)
-			output.write('DTEND;VALUE=DATE-TIME:%s\n' % tstring)
-			output.write('DTSTART;VALUE=DATE-TIME:%s\n' % tstring)
-			output.write('SUMMARY:%s\n' % bestdate.seq.name)
-			output.write('DESCRIPTION:Sequence A%06d\n' % bestdate.seq.id)
-			output.write('END:VEVENT\n')
+			bestdate.writeICal(output)
 			print bestdate.toString()
 output.write('END:VCALENDAR\n')

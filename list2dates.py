@@ -1,9 +1,9 @@
 import oeis
-import datetime
-from dateclass import date
+from datetime import *
+from dateclass import *
 
 def defaultYear(month, day):
-	today = datetime.date.today()
+	today = date.today()
 	if month < today.month:
 		return today.year + 1
 	if month > today.month:
@@ -12,109 +12,98 @@ def defaultYear(month, day):
 		return today.year + 1
 	return today.year
 
-def list2dates(seq, score):
+def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 
-	name = seq.name
-	numbers = seq.sequence
-	multiplier = score
+	useYear = year >= 0
 
-	dates = []
-	timefirst = 0.7;
+	if timeFirst and useSeconds and useYear:
+		formatted = '%02d/%02d/%02d %02d:%02d:%02d' % tuple(seq.sequence[0:6])
+	elif timeFirst and useSeconds and not useYear:
+		formatted = '%02d/%02d %02d:%02d:%02d' % tuple(seq.sequence[0:5])
+	elif timeFirst and not useSeconds and useYear:
+		formatted = '%02d/%02d/%02d %02d:%02d' % tuple(seq.sequence[0:5])
+	elif timeFirst and not useSeconds and not useYear:
+		formatted = '%02d/%02d %02d:%02d' % tuple(seq.sequence[0:4])
+	elif not timeFirst and useSeconds and useYear:
+		formatted = '%02d:%02d:%02d %02d/%02d/%02d' % tuple(seq.sequence[0:6])
+	elif not timeFirst and useSeconds and not useYear:
+		formatted = '%02d:%02d:%02d %02d/%02d' % tuple(seq.sequence[0:5])
+	elif not timeFirst and not useSeconds and useYear:
+		formatted = '%02d:%02d %02d/%02d/%02d' % tuple(seq.sequence[0:5])
+	elif not timeFirst and not useSeconds and not useYear:
+		formatted = '%02d:%02d %02d/%02d' % tuple(seq.sequence[0:4])
 
-	# date-first formats
+	if not useTime:
+		if year >= 0:
+			return seqDate(seq, formatted, datetime(seq.sequence[year], seq.sequence[month], seq.sequence[day]))
+		else:
+			return seqDate(seq, formatted, datetime(defaultYear(seq.sequence[month], seq.sequence[day]), seq.sequence[month], seq.sequence[day]))
 
-	## iso format
-	d = date(seq, 'iso', multiplier, \
-			numbers[0], numbers[1], numbers[2], \
-			numbers[3], numbers[4], numbers[5])
-	if d.score > 0:
-		dates.append(d)
+	if timeFirst:
+		timeOffset = 0
+		if useSeconds:
+			dateOffset = 3
+		else:
+			dateOffset = 2
+	else:
+		dateOffset = 0
+		if year >= 0:
+			timeOffset = 3
+		else:
+			timeOffset = 2
 
-	## uk format
-	d = date(seq, 'uk date/time', multiplier, \
-			numbers[2], numbers[1], numbers[0], \
-			numbers[3], numbers[4], numbers[5])
-	if d.score > 0:
-		dates.append(d)
+	month = seq.sequence[month + dateOffset]
+	day = seq.sequence[day + dateOffset]
+	if useYear:
+		year = seq.sequence[year]
+	else:
+		year = defaultYear(month, day)
+	hour = seq.sequence[timeOffset]
+	minute = seq.sequence[timeOffset + 1]
+	if useSeconds:
+		second = seq.sequence[timeOffset + 2]
+	else:
+		second = 0
 
-	## us format
-	d = date(seq, 'us date/time', multiplier, \
-			numbers[2], numbers[0], numbers[1], \
-			numbers[3], numbers[4], numbers[5])
-	if d.score > 0:
-		dates.append(d)
+	return seqDate(seq, formatted, datetime(year, month, day, hour, minute, second))
 
-	# time-first formats
-	multiplier *= 0.7
 
-	## uk format
-	d = date(seq, 'uk time/date', multiplier * timefirst, \
-			numbers[5], numbers[4], numbers[3], \
-			numbers[0], numbers[1], numbers[2])
-	if d.score > 0 and d.hours != []:
-		dates.append(d)
+def list2dates(seq):
 
-	## us format
-	d = date(seq, 'us time/date', multiplier * timefirst, \
-			numbers[4], numbers[5], numbers[3], \
-			numbers[0], numbers[1], numbers[2])
-	if d.score > 0 and d.hours != []:
-		dates.append(d)
+	l = []
 
-	# date-first formats with no year
+	for timeFirst in [False, True]:
+		for useSeconds in [False, True]:
+			for useTime in [False, True]:
+				try:
+					l.append(toDate(seq, 0,1,2, useTime, timeFirst, useSeconds))
+				except ValueError:
+					pass
+				except OverflowError:
+					pass
+				try:
+					l.append(toDate(seq, -1,0,1, useTime, timeFirst, useSeconds))
+				except ValueError:
+					pass
+				except OverflowError:
+					pass
+				try:
+					l.append(toDate(seq, 3,1,2, useTime, timeFirst, useSeconds))
+				except ValueError:
+					pass
+				except OverflowError:
+					pass
+				try:
+					l.append(toDate(seq, 3,2,1, useTime, timeFirst, useSeconds))
+				except ValueError:
+					pass
+				except OverflowError:
+					pass
+				try:
+					l.append(toDate(seq, -1,1,0, useTime, timeFirst, useSeconds))
+				except ValueError:
+					pass
+				except OverflowError:
+					pass
 
-	## iso format
-	d = date(seq, 'iso no year', multiplier, \
-			defaultYear(numbers[0], numbers[1]), numbers[0], numbers[1], \
-			numbers[2], numbers[3], numbers[4])
-	if d.score > 0:
-		dates.append(d)
-
-	## uk format
-	d = date(seq, 'uk date/time no year', multiplier, \
-			defaultYear(numbers[1], numbers[0]), numbers[1], numbers[0], \
-			numbers[2], numbers[3], numbers[4])
-	if d.score > 0:
-		dates.append(d)
-
-	## us format
-	d = date(seq, 'us date/time no year', multiplier, \
-			defaultYear(numbers[0], numbers[1]), numbers[0], numbers[1], \
-			numbers[2], numbers[3], numbers[4])
-	if d.score > 0:
-		dates.append(d)
-
-	# time-first formats
-
-	## uk format
-	d = date(seq, 'uk time/date no year', multiplier * timefirst, \
-			defaultYear(numbers[4], numbers[3]), numbers[4], numbers[3], \
-			numbers[0], numbers[1], numbers[2])
-	if d.score > 0 and d.seconds != []:
-		dates.append(d)
-
-	## us format
-	d = date(seq, 'us time/date no year', multiplier * timefirst, \
-			defaultYear(numbers[3], numbers[4]), numbers[3], numbers[4], \
-			numbers[0], numbers[1], numbers[2])
-	if d.score > 0 and d.seconds != []:
-		dates.append(d)
-
-	## time-first, no seconds. pretty rubbish by now.
-
-	## uk format
-	d = date(seq, 'uk time/date no year or seconds', multiplier * timefirst, \
-			defaultYear(numbers[3], numbers[2]), numbers[3], numbers[2], \
-			numbers[0], numbers[1], -1)
-	if d.score > 0 and d.hours != []:
-		dates.append(d)
-
-	## us format
-	d = date(seq, 'us time/date no year or seconds', multiplier * timefirst, \
-			defaultYear(numbers[2], numbers[3]), numbers[2], numbers[3], \
-			numbers[0], numbers[1], -1)
-	if d.score > 0 and d.hours != []:
-		dates.append(d)
-
-	return dates
-
+	return l
