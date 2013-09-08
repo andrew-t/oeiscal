@@ -13,7 +13,7 @@ for m in xrange(0,12):
 	for n in xrange(0,31):
 		calendar[m].append([])
 
-for s in xrange(1,10000):
+for s in xrange(1,228465):
 	print 'processing sequence %d' % s
 	seq = sequence(s)
 	if len(seq.sequence) < 6:

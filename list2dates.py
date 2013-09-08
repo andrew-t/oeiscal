@@ -24,21 +24,21 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 			return seqDate(seq, '%02d/%02d' % tuple(seq.sequence[0:2]), \
 				datetime(defaultYear(seq.sequence[month], seq.sequence[day]), seq.sequence[month], seq.sequence[day]))
 
-	if timeFirst and useSeconds and useYear:
+	if not timeFirst and useSeconds and useYear:
 		formatted = '%02d/%02d/%02d %02d:%02d:%02d' % tuple(seq.sequence[0:6])
-	elif timeFirst and useSeconds and not useYear:
-		formatted = '%02d/%02d %02d:%02d:%02d' % tuple(seq.sequence[0:5])
-	elif timeFirst and not useSeconds and useYear:
-		formatted = '%02d/%02d/%02d %02d:%02d' % tuple(seq.sequence[0:5])
-	elif timeFirst and not useSeconds and not useYear:
-		formatted = '%02d/%02d %02d:%02d' % tuple(seq.sequence[0:4])
-	elif not timeFirst and useSeconds and useYear:
-		formatted = '%02d:%02d:%02d %02d/%02d/%02d' % tuple(seq.sequence[0:6])
 	elif not timeFirst and useSeconds and not useYear:
-		formatted = '%02d:%02d:%02d %02d/%02d' % tuple(seq.sequence[0:5])
+		formatted = '%02d/%02d %02d:%02d:%02d' % tuple(seq.sequence[0:5])
 	elif not timeFirst and not useSeconds and useYear:
-		formatted = '%02d:%02d %02d/%02d/%02d' % tuple(seq.sequence[0:5])
+		formatted = '%02d/%02d/%02d  %02d:%02d' % tuple(seq.sequence[0:5])
 	elif not timeFirst and not useSeconds and not useYear:
+		formatted = '%02d/%02d %02d:%02d' % tuple(seq.sequence[0:4])
+	elif timeFirst and useSeconds and useYear:
+		formatted = '%02d:%02d:%02d %02d/%02d/%02d' % tuple(seq.sequence[0:6])
+	elif timeFirst and useSeconds and not useYear:
+		formatted = '%02d:%02d:%02d %02d/%02d' % tuple(seq.sequence[0:5])
+	elif timeFirst and not useSeconds and useYear:
+		formatted = '%02d:%02d  %02d/%02d/%02d' % tuple(seq.sequence[0:5])
+	elif timeFirst and not useSeconds and not useYear:
 		formatted = '%02d:%02d %02d/%02d' % tuple(seq.sequence[0:4])
 
 	if timeFirst:
