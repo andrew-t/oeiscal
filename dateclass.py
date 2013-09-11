@@ -16,7 +16,7 @@ class seqDate(object):
 
 	def writeICal(self, calFile):
 
-		tstring = '%04d%02d%02dT%02d%02d%02dZ\n' % \
+		tstring = '%04d%02d%02dT%02d%02d%02dZ' % \
 			(self.value.year, self.value.month, self.value.day, \
 			self.value.hour, self.value.minute, self.value.second)
 
@@ -24,5 +24,5 @@ class seqDate(object):
 		calFile.write('DTEND;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('DTSTART;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('SUMMARY:%s\n' % self.formatted)
-		calFile.write('DESCRIPTION:A%06d: %s\n' % (self.seq.id, self.seq.id))
+		calFile.write('DESCRIPTION:A%06d: %s\n' % (self.seq.id, self.seq.name))
 		calFile.write('END:VEVENT\n')

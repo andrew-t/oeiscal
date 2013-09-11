@@ -70,6 +70,10 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 
 def list2dates(seq):
 
+	# apparently this is how we remove sequences from the db:
+	if "Erroneous" in seq.name:
+		return []
+
 	l = []
 
 	for timeFirst in [False, True]:

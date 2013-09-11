@@ -13,7 +13,7 @@ for m in xrange(0,12):
 	for n in xrange(0,31):
 		calendar[m].append([])
 
-for s in xrange(1,10000):
+for s in xrange(1,228508):
 	print 'processing sequence %d' % s
 	seq = sequence(s)
 	if len(seq.sequence) < 6:
@@ -23,21 +23,29 @@ for s in xrange(1,10000):
 	print '%d dates found' % len(dates)
 	for d in dates:
 		if d.value > start and d.value < end:
-			calendar[d.value.month-1][d.value.day-1].append(d)
+			if not calendar[d.value.month-1][d.value.day-1] == []:
+				if d.score <= calendar[d.value.month-1][d.value.day-1]:
+					continue
+			calendar[d.value.month-1][d.value.day-1] = d
 
 output = open('oeis.ics', 'w')
 output.write('BEGIN:VCALENDAR\n')
 for m in xrange(0,12):
 	for n in xrange(0,31):
-		dates = calendar[m][n]
-		if len(dates) > 0:
-			bestdate = []
-			for date in dates:
-				if bestdate == []:
-					bestdate = date
-					continue
-				if date.score > bestdate.score:
-					bestdate = date
-			bestdate.writeICal(output)
-			print bestdate.toString()
+		if calendar[m][n] == []:
+			continue
+		calendar[m][n].writeICal(output)
+		print '%d/%d %s' % (m, n, calendar[m][n].toString())
+
+		#dates = calendar[m][n]
+		#if len(dates) > 0:
+		#	bestdate = []
+		#	for date in dates:
+		#		if bestdate == []:
+		#			bestdate = date
+		#			continue
+		#		if date.score > bestdate.score:
+		#			bestdate = date
+		#	bestdate.writeICal(output)
+		#	print bestdate.toString()
 output.write('END:VCALENDAR\n')
