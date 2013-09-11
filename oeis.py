@@ -38,4 +38,7 @@ class sequence(object):
 			if lid == ord('N'):
 				self.name = line
 
-		self.sequence = map(int, nums.split(','))
+		if len(nums) == 0:
+			self.sequence = []
+		else:
+			self.sequence = map(int, nums.split(','))
