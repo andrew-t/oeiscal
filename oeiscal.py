@@ -13,7 +13,7 @@ for m in xrange(0,12):
 	for n in xrange(0,31):
 		calendar[m].append([])
 
-for s in xrange(1,228508):
+for s in xrange(1,228667):
 	print 'processing sequence %d' % s
 	seq = sequence(s)
 	if len(seq.sequence) < 6:
@@ -25,7 +25,7 @@ for s in xrange(1,228508):
 		if d.value > start and d.value < end:
 			if not calendar[d.value.month-1][d.value.day-1] == []:
 				if not d.beats(calendar[d.value.month-1][d.value.day-1]):
-				continue
+					continue
 			calendar[d.value.month-1][d.value.day-1] = d
 
 output = open('oeis.ics', 'w')

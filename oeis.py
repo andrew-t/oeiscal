@@ -9,19 +9,19 @@ class sequence(object):
 		except IOError:
 			txt = urllib2.urlopen(self.url).read(20000)
 			open(filename, 'w').write(txt)
-		return txt.split('\n')
+		return txt
 
 	def __init__(self, i):
 
 		self.id = i
 		self.name = 'name not found'
-		self.page = self.getPage()
 		self.url = 'http://oeis.org/search?q=id:A%06d&fmt=text' % self.id
+		self.page = self.getPage()
 
 		nums = ''
 		last = ord('R')
 
-		for line in self.page:
+		for line in self.page.split('\n'):
 			if len(line) < 2:
 				continue
 			lid = ord(line[1])

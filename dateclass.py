@@ -8,10 +8,10 @@ class seqDate(object):
 
 	def toString(self):
 		try:
-			string = '%s (score: %d) -- ' % (self.seq.name, self.score)
-		except:
-			string = 'unnamed -- '
-		string += self.formatted
+			string = self.seq.name
+		except AttributeError:
+			string = 'unnamed'
+		string += ' -- ' + self.formatted
 		return string
 
 	def writeICal(self, calFile):
