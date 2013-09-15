@@ -24,8 +24,8 @@ for s in xrange(1,228508):
 	for d in dates:
 		if d.value > start and d.value < end:
 			if not calendar[d.value.month-1][d.value.day-1] == []:
-				if d.beats(calendar[d.value.month-1][d.value.day-1]):
-					continue
+				if not d.beats(calendar[d.value.month-1][d.value.day-1]):
+				continue
 			calendar[d.value.month-1][d.value.day-1] = d
 
 output = open('oeis.ics', 'w')

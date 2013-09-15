@@ -42,9 +42,9 @@ class seqDate(object):
 			return False
 
 		# rule three: prefer early IDs as they're probably less arcane
-		if self.id < other.id:
+		if self.seq.id < other.seq.id:
 			return True
-		if self.id > other.id:
+		if self.seq.id > other.seq.id:
 			return False
 
 		# neither beats the other
