@@ -7,7 +7,7 @@ class sequence(object):
 		try:
 			txt = open(filename, 'r').read()
 		except IOError:
-			txt = urllib2.urlopen('http://oeis.org/search?q=id:A%06d&fmt=text' % self.id).read(20000)
+			txt = urllib2.urlopen(self.url).read(20000)
 			open(filename, 'w').write(txt)
 		return txt.split('\n')
 
@@ -15,11 +15,13 @@ class sequence(object):
 
 		self.id = i
 		self.name = 'name not found'
+		self.page = self.getPage()
+		self.url = 'http://oeis.org/search?q=id:A%06d&fmt=text' % self.id
 
 		nums = ''
 		last = ord('R')
 
-		for line in self.getPage():
+		for line in self.page:
 			if len(line) < 2:
 				continue
 			lid = ord(line[1])

@@ -24,7 +24,7 @@ class seqDate(object):
 		calFile.write('DTEND;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('DTSTART;VALUE=DATE-TIME:%s\n' % tstring)
 		calFile.write('SUMMARY:%s - %s\n' % (self.formatted, self.seq.name))
-		calFile.write('DESCRIPTION:http://oeis.org/A%06d - %s\n' % (self.seq.id, self.seq.name))
+		calFile.write('DESCRIPTION:http://oeis.org/A%06d\\n%s\n' % (self.seq.id, self.seq.page.replace('\n', '\\n')))
 		calFile.write('END:VEVENT\n')
 
 	def beats(self, other):
