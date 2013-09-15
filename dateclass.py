@@ -4,7 +4,7 @@ class seqDate(object):
 		self.seq = seq
 		self.formatted = formatted
 		self.value = value
-		self.score = len(formatted) * 1000 + seq.id * 0.001
+
 
 	def toString(self):
 		try:
@@ -26,3 +26,26 @@ class seqDate(object):
 		calFile.write('SUMMARY:%s - %s\n' % (self.formatted, self.seq.name))
 		calFile.write('DESCRIPTION:http://oeis.org/A%06d - %s\n' % (self.seq.id, self.seq.name))
 		calFile.write('END:VEVENT\n')
+
+	def beats(self, other):
+
+		# rule one: if the formatted date is longer, it's a win.
+		if len(self.formatted) > len(other.formatted):
+			return True
+		if len(self.formatted) < len(other.formatted):
+			return False
+		
+		# rule two: prefer times after 7am
+		if self.value.hour >= 7 and other.value.hour < 7:
+			return True
+		if self.value.hour < 7 and other.value.hour >= 7:
+			return False
+
+		# rule three: prefer early IDs as they're probably less arcane
+		if self.id < other.id:
+			return True
+		if self.id > other.id:
+			return False
+
+		# neither beats the other
+		return False
