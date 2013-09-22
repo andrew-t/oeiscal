@@ -12,14 +12,21 @@ def defaultYear(month, day):
 		return today.year + 1
 	return today.year
 
+def toYear(year, month, day):
+	if year < 0 or year >= 100:
+		return year
+	dyear = defaultYear(month, day)
+	return year + dyear - (dyear % 100)
+
 def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 
 	useYear = year >= 0
 
 	if not useTime:
-		if year >= 0:
+		if useYear:
 			return seqDate(seq, '%02d/%02d/%02d' % tuple(seq.sequence[0:3]), \
-				datetime(seq.sequence[year], seq.sequence[month], seq.sequence[day]))
+				datetime(toYear(seq.sequence[year], seq.sequence[month], seq.sequence[day]), \
+				seq.sequence[month], seq.sequence[day]))
 		else:
 			return seqDate(seq, '%02d/%02d' % tuple(seq.sequence[0:2]), \
 				datetime(defaultYear(seq.sequence[month], seq.sequence[day]), seq.sequence[month], seq.sequence[day]))
@@ -49,7 +56,7 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 			dateOffset = 2
 	else:
 		dateOffset = 0
-		if year >= 0:
+		if useYear:
 			timeOffset = 3
 		else:
 			timeOffset = 2
@@ -57,17 +64,20 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 	month = seq.sequence[month + dateOffset]
 	day = seq.sequence[day + dateOffset]
 	if useYear:
-		year = seq.sequence[year]
+		year = seq.sequence[year + dateOffset]
 	else:
 		year = defaultYear(month, day)
 	hour = seq.sequence[timeOffset]
+	# use 12 hour clock if it avoids crappy morning toimes
+	if hour > 0 and hour < 7:
+		hour += 12
 	minute = seq.sequence[timeOffset + 1]
 	if useSeconds:
 		second = seq.sequence[timeOffset + 2]
 	else:
-		second = 0
+ 		second = 0
 
-	return seqDate(seq, formatted, datetime(year, month, day, hour, minute, second))
+	return seqDate(seq, formatted, datetime(toYear(year, month, day), month, day, hour, minute, second))
 
 
 def list2dates(seq):
@@ -94,13 +104,13 @@ def list2dates(seq):
 				except OverflowError:
 					pass
 				try:
-					l.append(toDate(seq, 3,1,2, useTime, timeFirst, useSeconds))
+					l.append(toDate(seq, 2,0,1, useTime, timeFirst, useSeconds))
 				except ValueError:
 					pass
 				except OverflowError:
 					pass
 				try:
-					l.append(toDate(seq, 3,2,1, useTime, timeFirst, useSeconds))
+					l.append(toDate(seq, 2,1,0, useTime, timeFirst, useSeconds))
 				except ValueError:
 					pass
 				except OverflowError:
