@@ -9,7 +9,6 @@ class sequence(object):
 		try:
 			txt = open(filename, 'r').read()
 		except IOError:
-			print 'getting from ' + self.apiUrl
 			txt = urllib2.urlopen(self.apiUrl).read(20000)
 			open(filename, 'w').write(txt)
 		return txt
@@ -25,6 +24,9 @@ class sequence(object):
 		self.apiUrl = 'http://oeis.org/search?q=id:A%06d&fmt=text' % self.id
 
 		if numbers == None:
+
+			print 'downloading from ' + self.url
+
 			nums = ''
 			last = ord('R')
 

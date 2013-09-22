@@ -19,6 +19,8 @@ twitter = Twitter(auth=OAuth('1879496899-i0mC4OBfPKEGZn5g0NXiSXMsO8DARfqHKxItJr6
 today = (datetime.today() + timedelta(0.25)).date()
 times = []
 for seq in all():
+	if (seq.id % 1000) == 0:
+		print 'processing sequence %d' % seq.id
 	if len(seq.sequence) < 6:
 		continue
 	dates = list2dates(seq)
