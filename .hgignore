@@ -3,3 +3,4 @@ oeis/*
 *.pyc
 *.save
 *.ics
+cache/*

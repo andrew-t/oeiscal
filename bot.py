@@ -16,7 +16,7 @@ twitter = Twitter(auth=OAuth('1879496899-i0mC4OBfPKEGZn5g0NXiSXMsO8DARfqHKxItJr6
 # pull out all the interesting times for today
 today = date.today()
 times = []
-for s in xrange(1,228869):
+for seq in all():
 	seq = sequence(s)
 	if len(seq.sequence) < 6:
 		continue
