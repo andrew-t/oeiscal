@@ -14,7 +14,9 @@ from time import *
 twitter = Twitter(auth=OAuth('1879496899-i0mC4OBfPKEGZn5g0NXiSXMsO8DARfqHKxItJr6', 'G9qmGtEr3PsiGwJjpOnKqL03G4TZaPm7ThnbcWB05k', "xCDjsWwMfu3J2Kp5eN8QQ", "nf5oGUGr0IuoTY5G8WJvY8d184m3lFpBrib9KWcU"))
 
 # pull out all the interesting times for today
-today = date.today()
+
+# this is a dirty hack to make sure we don't do the wrong date in daylight savings time:
+today = (datetime.today() + timedelta(0.25)).date()
 times = []
 for seq in all():
 	seq = sequence(s)
