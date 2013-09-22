@@ -67,32 +67,23 @@ class sequence(object):
 		# return them all...
 		return map(sequence, xrange(1, count + 1))
 
-class oeis(object):
+def all():
 
-	def __init__(self):
-
-		# find latest number of sequences
+	# find latest number of sequences
+	try:
 		try:
-			try:
-				countString = open('count', 'r').read()
-			except:
-				countString = re.search('Contains (\\d+) sequences', \
-					urllib2.urlopen(self.url).read(20000)).group(0)
-				try:
-					open('count', 'w').write(countString)
-				except:
-					pass
-			self.count = int(countString)
+			countString = open('count', 'r').read()
 		except:
-			self.count = 228922
+			countString = re.search('Contains (\\d+) sequences', \
+				urllib2.urlopen(self.url).read(20000)).group(0)
+			try:
+				open('count', 'w').write(countString)
+			except:
+				pass
+		count = int(countString)
+	except:
+		count = 228922
 
-		self.current = 0
-
-	def __iter__(self):
-		return self
-
-	def next(self):
-		if self.current == self.count:
-			raise StopIteration
-		self.current += 1
-		return sequence(self.current)
+	# iterate through them
+	for id in xrange(1, count + 1):
+		yield sequence(id)
