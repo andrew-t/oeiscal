@@ -9,43 +9,50 @@ class sequence(object):
 		try:
 			txt = open(filename, 'r').read()
 		except IOError:
-			txt = urllib2.urlopen(self.url).read(20000)
+			txt = urllib2.urlopen(self.apiUrl).read(20000)
 			open(filename, 'w').write(txt)
 		return txt
 
-	def __init__(self, i):
+	def __init__(self, i, name = None, numbers = None):
 
 		self.id = i
-		self.name = 'name not found'
-		self.url = 'http://oeis.org/search?q=id:A%06d&fmt=text' % self.id
-		self.page = self.getPage()
-
-		nums = ''
-		last = ord('R')
-
-		for line in self.page.split('\n'):
-			if len(line) < 2:
-				continue
-			lid = ord(line[1])
-			line = line[11:]
-
-			if lid == last + 1:
-				#bit of a glitch in sequence 466 here if we don't work around it, so...
-				if nums[-1:] == ',':
-					nums += line
-				else:
-					nums = line
-				last = lid
-			elif nums != '':
-				last = ord('Z')
-
-			if lid == ord('N'):
-				self.name = line
-
-		if len(nums) == 0:
-			self.sequence = []
+		if name == None:
+			self.name = 'name not found'
 		else:
-			self.sequence = map(int, nums.split(','))
+			self.name = name
+		self.url = 'http://oeis.org/%06d' % self.id
+		self.apiUrl = 'http://oeis.org/search?q=id:A%06d&fmt=text' % self.id
+
+		if numbers == None:
+			nums = ''
+			last = ord('R')
+
+			for line in self.getPage().split('\n'):
+				if len(line) < 2:
+					continue
+				lid = ord(line[1])
+				line = line[11:]
+
+				if lid == last + 1:
+					#bit of a glitch in sequence 466 here if we don't work around it, so...
+					if nums[-1:] == ',':
+						nums += line
+					else:
+						nums = line
+					last = lid
+				elif nums != '':
+					last = ord('Z')
+
+				if lid == ord('N'):
+					self.name = line
+
+			if len(nums) == 0:
+				self.sequence = []
+			else:
+				self.sequence = map(int, nums.split(','))
+
+		else:
+			self.sequence = numbers
 
 
 def all():
