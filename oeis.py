@@ -47,25 +47,6 @@ class sequence(object):
 		else:
 			self.sequence = map(int, nums.split(','))
 
-	def all():
-
-		# find latest number of sequences
-		try:
-			try:
-				countString = open('count', 'r').read()
-			except:
-				countString = re.search('Contains (\\d+) sequences', \
-					urllib2.urlopen(self.url).read(20000)).group(0)
-				try:
-					open('count', 'w').write(countString)
-				except:
-					pass
-			count = int(countString)
-		except:
-			count = 228922
-
-		# return them all...
-		return map(sequence, xrange(1, count + 1))
 
 def all():
 
