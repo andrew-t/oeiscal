@@ -3,7 +3,7 @@ from oeis import *
 from datetime import *
 from dateclass import *
 
-from twitter import *
+#from twitter import *
 from re import *
 from subprocess import call
 import urllib
@@ -11,6 +11,31 @@ import urllib
 from time import *
 
 import os
+
+def tryDate(hourIndex):
+	# pretty sure all this global abuse is allowed in python.
+	try:
+		if hourIndex > yearIndex:
+			format = '%02d/%02d/%02d %01d:%02d:%02d'
+			minIndex = hourIndex - 3
+		else:
+			format = '%1d:%02d:%02d %02d/%02d/%02d'
+			minIndex = hourIndex
+
+		year = seq.sequence[yearIndex]
+		if year < 100:
+			year += today.year - (today.year % 100)
+
+		d = seqDate(seq, format % tuple(seq.sequence[minIndex:minIndex + 6]), \
+				datetime(year, seq.sequence[month], seq.sequence[day], \
+					seq.sequence[hourIndex], seq.sequence[hourIndex + 1], seq.sequence[hourIndex + 2]))
+		times.append(d)
+		print 'haha, found a great one: %s (%s)' % (d.formatted, d.seq.name)
+
+	except Execption:
+		pass
+
+
 os.chdir('/home/pi/oeiscal')
 
 # i've premade some credentials for this.
@@ -26,10 +51,41 @@ for seq in all():
 		print 'processing sequence %d' % seq.id
 	if len(seq.sequence) < 6:
 		continue
+
+	# try the first six in any order:
 	dates = list2dates(seq)
 	for d in dates:
 		if d.value.date() == today:
 			times.append(d)
+
+	# for good measure, pull out anything at all, from anywhere in the sequence,
+	# that uses all six parts of the date:
+	yearIndices = [i for i, x in enumerate(seq.sequence) if x == today.year or x == today.year % 100]
+	if len(yearIndices) == 0:
+		continue
+	monthIndices = [i for i, x in enumerate(seq.sequence) if x == today.month]
+	if len(monthIndices) == 0:
+		continue
+	dayIndices = [i for i, x in enumerate(seq.sequence) if x == today.day]
+	if len(dayIndices) == 0:
+		continue
+
+	for yearIndex in yearIndices:
+		for month in monthIndices:
+			for day in dayIndices:
+				# ISO format:
+				if day == month + 1 and month == yearIndex + 1:
+					tryDate(day + 1)
+					tryDate(yearIndex - 3)
+				# UK format:
+				if yearIndex == month + 1 and month == day + 1:
+					tryDate(yearIndex + 1)
+					tryDate(day - 3)
+				# US format:
+				if yearIndex == day + 1 and month == day - 1:
+					tryDate(yearIndex + 1)
+					tryDate(month - 3)
+
 print '%d dates found' % len(times)
 
 # one per sequence
