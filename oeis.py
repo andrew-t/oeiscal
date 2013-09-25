@@ -9,6 +9,7 @@ class sequence(object):
 		try:
 			txt = open(filename, 'r').read()
 		except IOError:
+			print 'getting from ' + self.apiUrl
 			txt = urllib2.urlopen(self.apiUrl).read(20000)
 			open(filename, 'w').write(txt)
 		return txt

@@ -10,6 +10,9 @@ import urllib
 
 from time import *
 
+import os
+os.chdir('/home/pi/oeiscal')
+
 # i've premade some credentials for this.
 twitter = Twitter(auth=OAuth('1879496899-i0mC4OBfPKEGZn5g0NXiSXMsO8DARfqHKxItJr6', 'G9qmGtEr3PsiGwJjpOnKqL03G4TZaPm7ThnbcWB05k', "xCDjsWwMfu3J2Kp5eN8QQ", "nf5oGUGr0IuoTY5G8WJvY8d184m3lFpBrib9KWcU"))
 
@@ -74,4 +77,7 @@ for time in times:
 		text = text + time.seq.name
 	else:
 		text = text + time.seq.name[0:(lengthLeft - 4)] + '...'
-	twitter.statuses.update(status=text)
+	try:
+		twitter.statuses.update(status=text)
+	except:
+		print 'bummed up a tweet'
