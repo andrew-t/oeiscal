@@ -52,14 +52,14 @@ class sequence(object):
 
 			if len(nums) == 0:
 				self.sequence = []
+				self.numbers = ''
 			else:
 				self.numbers = nums
 				self.sequence = map(int, nums.split(','))
 
 		else:
 			self.numbers = numbers
-
-		self.sequence = map(int, self.numbers.split(','))
+			self.sequence = map(int, self.numbers.split(','))
 
 
 
@@ -88,23 +88,24 @@ def all(skip = 0):
 
 	# iterate through them
 	cacheId = 0
-	cache = cacheLines(0)
 	line = 0
 	for i in xrange(skip + 1, count + 1):
-		if (i % 1000) == 0:
-			cacheId += 1
+		if (i % 1000) == 1:
 			try:
 				cache = cacheLines(cacheId)
 			except:
 				cache = None
+			cacheId += 1
 			line = 0
-		try:
+		if cache == None:
+			yield sequence(i)
+		elif len(cache) <= line + 1:
+			yield sequence(i)
+		else:
 			yield sequence(i, \
 				cache[line], \
 				cache[line + 1])
 			line += 2
-		except:
-			yield sequence(i)
 
 def cacheFrom(start = 0):
 

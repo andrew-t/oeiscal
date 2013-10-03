@@ -79,6 +79,14 @@ def toDate(seq, year, month, day, useTime, timeFirst, useSeconds):
 
 	return seqDate(seq, formatted, datetime(toYear(year, month, day), month, day, hour, minute, second))
 
+def appendIfReal(l, seq, y,m,d, useTime, timeFirst, useSeconds):
+	try:
+		l.append(toDate(seq, y,m,d, useTime, timeFirst, useSeconds))
+	except ValueError:
+		pass
+	except OverflowError:
+		pass
+
 
 def list2dates(seq):
 
@@ -91,35 +99,10 @@ def list2dates(seq):
 	for timeFirst in [False, True]:
 		for useSeconds in [False, True]:
 			for useTime in [False, True]:
-				try:
-					l.append(toDate(seq, 0,1,2, useTime, timeFirst, useSeconds))
-				except ValueError:
-					pass
-				except OverflowError:
-					pass
-				try:
-					l.append(toDate(seq, -1,0,1, useTime, timeFirst, useSeconds))
-				except ValueError:
-					pass
-				except OverflowError:
-					pass
-				try:
-					l.append(toDate(seq, 2,0,1, useTime, timeFirst, useSeconds))
-				except ValueError:
-					pass
-				except OverflowError:
-					pass
-				try:
-					l.append(toDate(seq, 2,1,0, useTime, timeFirst, useSeconds))
-				except ValueError:
-					pass
-				except OverflowError:
-					pass
-				try:
-					l.append(toDate(seq, -1,1,0, useTime, timeFirst, useSeconds))
-				except ValueError:
-					pass
-				except OverflowError:
-					pass
+				appendIfReal(l, seq, 0,1,2, useTime, timeFirst, useSeconds)
+				appendIfReal(l, seq, -1,0,1, useTime, timeFirst, useSeconds)
+				appendIfReal(l, seq, 2,0,1, useTime, timeFirst, useSeconds)
+				appendIfReal(l, seq, 2,1,0, useTime, timeFirst, useSeconds)
+				appendIfReal(l, seq, -1,1,0, useTime, timeFirst, useSeconds)
 
 	return l
