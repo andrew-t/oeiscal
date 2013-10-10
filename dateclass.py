@@ -1,10 +1,13 @@
 class seqDate(object):
 
-	def __init__(self, seq, formatted, value):
+	def __init__(self, seq, formatted, value, offset = 0):
 		self.seq = seq
 		self.formatted = formatted
 		self.value = value
+		self.offset = offset
 
+		self.searchUrl = ('http://oeis.org/search?q=id:A%06d+seq:' % seq.id) + \
+			formatted.replace(':', '%2C').replace('/', '%2C').replace(' ', '%2C').replace('%2C0', '%2C').lstrip('0')
 
 	def toString(self):
 		try:
@@ -45,6 +48,12 @@ class seqDate(object):
 		if self.seq.id < other.seq.id:
 			return True
 		if self.seq.id > other.seq.id:
+			return False
+
+		# rule four: prefer extracts from near the beginning.
+		if len(self.offset) < len(other.offset):
+			return True
+		if len(self.offset) > len(other.offset):
 			return False
 
 		# neither beats the other

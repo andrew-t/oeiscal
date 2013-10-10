@@ -4,7 +4,7 @@ from datetime import *
 from dateclass import *
 
 from twitter import *
-from re import *
+import re
 from subprocess import call
 import urllib
 
@@ -57,8 +57,7 @@ def tryDate(hourIndex):
 		year += today.year - (today.year % 100)
 
 	d = seqDate(seq, format % tuple(seq.sequence[minIndex:minIndex + 6]), \
-			datetime(year, month, day, \
-				hour, minute, ))
+			datetime(year, month, day, hour, minute, second), minIndex)
 	times.append(d)
 	print 'haha, found a great one: %s (%s)' % (d.formatted, d.seq.name)
 
@@ -90,12 +89,24 @@ twitter = Twitter(auth=OAuth('1879496899-i0mC4OBfPKEGZn5g0NXiSXMsO8DARfqHKxItJr6
 
 # this is a dirty hack to make sure we don't do the wrong date in daylight savings time:
 today = (datetime.today() + timedelta(0.25)).date()
+
+# filters
+filters = [re.compile(r'Erroneous version of A\d{6}'), \
+	re.compile(r'Divisors of [^a-zA-Z]+$')]
+
 times = []
 backupTimes = []
 for seq in all():
 	if (seq.id % 1000) == 0:
 		print 'processing sequence %d' % seq.id
 	if len(seq.sequence) < 6:
+		continue
+	crap = False
+	for r in filters:
+		if r.match(seq.name):
+			crap = True
+			break
+	if crap:
 		continue
 
 	# try the first six in any order:
@@ -168,8 +179,8 @@ for time in times:
 		# missed it, move on with life.
 		continue
 	sleep(wait)
-	text = time.formatted + ' http://oeis.org/A%06d ' % time.seq.id
-	lengthLeft = 140 - len(text)
+	text = time.formatted + ' ' + time.searchUrl + ' '
+	lengthLeft = 140 - len(time.formatted) - 22 # all links count as 20
 	if len(time.seq.name) <= lengthLeft:
 		text = text + time.seq.name
 	else:
