@@ -100,8 +100,6 @@ def list2dates(seq):
 		for useSeconds in [False, True]:
 			for useTime in [False, True]:
 				appendIfReal(l, seq, 0,1,2, useTime, timeFirst, useSeconds)
-				appendIfReal(l, seq, -1,0,1, useTime, timeFirst, useSeconds)
-				appendIfReal(l, seq, 2,0,1, useTime, timeFirst, useSeconds)
 				appendIfReal(l, seq, 2,1,0, useTime, timeFirst, useSeconds)
 				appendIfReal(l, seq, -1,1,0, useTime, timeFirst, useSeconds)
 

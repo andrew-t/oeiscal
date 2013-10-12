@@ -1,4 +1,3 @@
-from list2dates import *
 from oeis import *
 from datetime import *
 from dateclass import *
@@ -95,7 +94,6 @@ filters = [re.compile(r'Erroneous version of A\d{6}'), \
 	re.compile(r'Divisors of [^a-zA-Z]+$')]
 
 times = []
-backupTimes = []
 for seq in all():
 	if (seq.id % 1000) == 0:
 		print 'processing sequence %d' % seq.id
@@ -109,14 +107,7 @@ for seq in all():
 	if crap:
 		continue
 
-	# try the first six in any order:
-	dates = list2dates(seq)
-	for d in dates:
-		if d.value.date() == today:
-			backupTimes.append(d)
-
-	# for good measure, pull out anything at all, from anywhere in the sequence,
-	# that uses all six parts of the date:
+	# pull out anything at all, from anywhere in the sequence, that uses all six parts of the date:
 	yearIndices = [i for i, x in enumerate(seq.sequence) if x == today.year or x == today.year % 100]
 	if len(yearIndices) == 0:
 		continue
@@ -138,31 +129,10 @@ for seq in all():
 				if yearIndex == monthIndex + 1 and monthIndex == dayIndex + 1:
 					tryDate(yearIndex + 1)
 					tryDate(dayIndex - 3)
-				# US format:
-				if yearIndex == dayIndex + 1 and monthIndex == dayIndex - 1:
-					tryDate(yearIndex + 1)
-					tryDate(monthIndex - 3)
 
-print '%d excellent dates found' % len(times)
-print '%d backup dates found' % len(backupTimes)
+print '%d dates found' % len(times)
 
 onePerSequence(times)
-
-if len(times) < 10:
-	print 'adding in backups.'
-	times.extend(backupTimes)
-	onePerSequence(times)
-
-# let's not piss people off though
-if len(times) > 10:
-	times.sort(key = lambda x: -len(x.formatted))
-	t = 10
-	while t < len(times):
-		if len(times[t].formatted) < 17:
-			times = times[0:t]
-			break
-		t += 1
-print '%d dates accepted:' % len(times)
 
 for t in times:
 	print '  %s -- A%06d (%s)' % (t.formatted, t.seq.id, t.seq.name)
@@ -170,14 +140,22 @@ for t in times:
 # get them in order
 times.sort(key = lambda x: x.value)
 
+# if there are simultaneous ones, get the best one
+for i in xrange(len(times) - 2, -1, -1):
+	if times[i].value == times[i + 1].value:
+		if times[i].beats(times[i + 1]):
+			del times[i + 1]
+		else:
+			del times[i]
+
 # tweet them!
 for time in times:
 	# wait for the first one
 	wait = (time.value - datetime.now()).total_seconds()
-	print 'next tweet in %d seconds' % wait
 	if wait < 0:
 		# missed it, move on with life.
 		continue
+	print 'next tweet in %d seconds' % wait
 	sleep(wait)
 	text = time.formatted + ' ' + time.searchUrl + ' '
 	lengthLeft = 140 - len(time.formatted) - 22 # all links count as 20
