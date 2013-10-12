@@ -51,9 +51,9 @@ class seqDate(object):
 			return False
 
 		# rule four: prefer extracts from near the beginning.
-		if len(self.offset) < len(other.offset):
+		if self.offset < other.offset:
 			return True
-		if len(self.offset) > len(other.offset):
+		if self.offset > other.offset:
 			return False
 
 		# neither beats the other
