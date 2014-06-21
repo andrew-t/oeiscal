@@ -82,7 +82,9 @@ def onePerSequence(l):
 os.chdir('/home/pi/oeiscal')
 
 # i've premade some credentials for this.
-twitter = Twitter(auth=OAuth('1879496899-i0mC4OBfPKEGZn5g0NXiSXMsO8DARfqHKxItJr6', 'G9qmGtEr3PsiGwJjpOnKqL03G4TZaPm7ThnbcWB05k', "xCDjsWwMfu3J2Kp5eN8QQ", "nf5oGUGr0IuoTY5G8WJvY8d184m3lFpBrib9KWcU"))
+# see https://pypi.python.org/pypi/twitter to get your own.
+oauth_token, oauth_secret = read_token_file('/home/pi/oeiscal/twitter_creds')
+twitter = Twitter(auth=OAuth(oauth_token, oauth_secret, "eIrTzMlRKiO4LeRKXHSqgg", "1jbf4tzeSnQoczpKPIdyoSoQPwU3i8k8lRF7dg4wlsc"))
 
 # pull out all the interesting times for today
 
@@ -129,6 +131,10 @@ for seq in all():
 				if yearIndex == monthIndex + 1 and monthIndex == dayIndex + 1:
 					tryDate(yearIndex + 1)
 					tryDate(dayIndex - 3)
+				# US format:
+				if yearIndex == dayIndex + 1 and monthIndex == dayIndex - 1:
+					tryDate(yearIndex + 1)
+					tryDate(monthIndex - 3)
 
 print '%d dates found' % len(times)
 

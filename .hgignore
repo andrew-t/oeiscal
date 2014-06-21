@@ -4,3 +4,5 @@ oeis/*
 *.save
 *.ics
 cache/*
+twitter_creds
+report*
