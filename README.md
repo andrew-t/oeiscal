@@ -17,3 +17,11 @@ And you don't have to start at five. You could start at six, and it happened in 
 And you don't have to count in ones. You could do just the odd numbers. Or just the primes. Or...
 
 So I did what anyone would do: I fired up Python, scraped the <a href="http://oeis.org/">Online Encyclopedia of Integer Sequences</a>, and <a href="http://twitter.com/823years">set my Raspberry Pi tweeting every interesting date it could find</a>
+
+##Note
+
+This is the Node.js version. Before starting, you need to run
+
+    npm install twitter
+    npm install q
+
