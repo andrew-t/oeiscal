@@ -4,6 +4,7 @@ oeiscal
 People seem interested by unusual-looking dates. This meme, for example, gained a surprising amount of traction considering how strangely confused it is about how two-digit years correspond to four-digit ones:
 
 > At exactly 06 mins and 07 seconds after 5 o’clock on Aug 9th 2010, it will be 05:06:07 08/09/10. This won’t happen again until the year 3010.
+
 And then there's this one, which is just mad.
 
 > AN INTERESTING FACT ABOUT AUGUST 2010. This August has 5 Sundays, 5 Mondays, 5 Tuesdays, all in one month. It happens once in 823 years.
